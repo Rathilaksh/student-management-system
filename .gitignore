@@ -4,6 +4,10 @@ build
 .DS_Store
 .env
 .env.*
+!.env.example
+!.env.production.example
+!server/.env.example
+!client/.env.example
 coverage
 client/node_modules
 client/dist

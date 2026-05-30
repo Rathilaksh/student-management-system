@@ -42,7 +42,7 @@ npm install
 
 Copy `server/.env.example` to `server/.env` and update the MongoDB Atlas connection string and JWT secret.
 
-For deployment, copy `.env.production.example` and set the production values for your host.
+For deployment, copy `.env.production.example` to `.env.production` or use the root `.env.example` as a template for your production environment.
 
 3. Configure the frontend environment:
 
@@ -134,8 +134,17 @@ Render serves the app through the Node server, so the client uses the same-origi
 Use the included `railway.toml` for a one-service deployment.
 
 1. Connect the repo to Railway.
-2. Add `MONGO_URI`, `JWT_SECRET`, and `CLIENT_URL` as environment variables.
-3. Railway will use `npm start` for the server; build the client with the root `build` script.
+2. Add these environment variables in Railway Service > Settings > Variables:
+   - `JWT_SECRET=<secure-random-string>` — required
+   - `MONGO_URI=<mongodb-atlas-connection-string>` — required
+   - `NODE_ENV=production` — required
+   - `PORT=5000` — optional, Railway will provide a port if not set
+   - `CLIENT_URL=https://your-app-domain.com` — optional, set when the frontend is hosted separately or to configure CORS
+   - `JWT_EXPIRES_IN=7d` — optional
+   - `COOKIE_NAME=sms_token` — optional
+3. Railway will use `npm start` for the server and the root `build` script to build the client.
+
+Railway healthchecks use `GET /health`.
 
 Set `CLIENT_URL` to your Railway public domain after the service is created.
 

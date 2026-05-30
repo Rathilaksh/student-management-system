@@ -18,10 +18,11 @@ This document explains how to deploy the app to Railway using MongoDB Atlas as t
     - Start command: `npm start`
 
 3) Set environment variables in Railway (Service > Settings > Variables)
-  - `MONGO_URI` (secret) — the MongoDB Atlas connection string from step 1
   - `JWT_SECRET` (secret) — a long random string used to sign JWT tokens (keep secret)
-  - `CLIENT_URL` — the public URL Railways provides for the service (set after first deploy) or your custom domain
+  - `MONGO_URI` (secret) — the MongoDB Atlas connection string from step 1
+  - `NODE_ENV` — set to `production`
   - `PORT` — optional (default 5000). Railway provides a port automatically if not set.
+  - `CLIENT_URL` — the public URL Railways provides for the service (set after first deploy) or your custom domain
   - `JWT_EXPIRES_IN` — optional (default `7d`)
   - `COOKIE_NAME` — optional (default `sms_token`)
 
