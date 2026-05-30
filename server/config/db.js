@@ -17,14 +17,9 @@ const getMongoUri = async () => {
 };
 
 const connectDB = async () => {
-  try {
-    const mongoUri = await getMongoUri();
-    await mongoose.connect(mongoUri);
-    console.log('MongoDB connected');
-  } catch (error) {
-    console.error(`MongoDB connection error: ${error.message}`);
-    process.exit(1);
-  }
+  const mongoUri = await getMongoUri();
+  await mongoose.connect(mongoUri);
+  console.log('MongoDB connected');
 };
 
 connectDB.stopMemoryServer = async () => {

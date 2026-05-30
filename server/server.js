@@ -25,12 +25,16 @@ const PORT = process.env.PORT || 5000;
 const app = createApp();
 
 const startServer = async () => {
-  await connectDB();
-  await seedDefaultAdmin();
-
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
   });
+
+  try {
+    await connectDB();
+    await seedDefaultAdmin();
+  } catch (error) {
+    console.error(`Startup error: ${error.message}`);
+  }
 };
 
 startServer().catch((error) => {
