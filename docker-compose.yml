@@ -1,0 +1,34 @@
+services:
+  app:
+    build:
+      context: .
+    ports:
+      - '5000:5000'
+    environment:
+      NODE_ENV: production
+      PORT: 5000
+      CLIENT_URL: http://localhost:5000
+      MONGO_URI: mongodb://mongo:27017/student_management_system
+      JWT_SECRET: change_me_in_production
+      JWT_EXPIRES_IN: 7d
+      COOKIE_NAME: sms_token
+    depends_on:
+      mongo:
+        condition: service_healthy
+
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    volumes:
+      - mongo-data:/data/db
+    ports:
+      - '27017:27017'
+    healthcheck:
+      test: ['CMD', 'mongosh', '--quiet', '--eval', 'db.runCommand({ ping: 1 }).ok']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+volumes:
+  mongo-data:
