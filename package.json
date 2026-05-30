@@ -16,6 +16,5 @@
   },
   "devDependencies": {
     "concurrently": "^9.1.2"
-    ,"supertest": "^6.4.3"
   }
 }

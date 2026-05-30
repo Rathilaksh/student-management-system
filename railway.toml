@@ -1,6 +1,6 @@
 [build]
 builder = "NIXPACKS"
-buildCommand = "npm ci --workspace client && npm run build --workspace client && npm ci --workspace server"
+buildCommand = "npm ci && npm run build"
 
 [deploy]
 startCommand = "npm start"
