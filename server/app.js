@@ -14,11 +14,30 @@ const createApp = () => {
 
   app.set('trust proxy', 1);
 
-  const allowedOrigin = process.env.CLIENT_URL || 'http://localhost:5173';
+  const clientUrl = process.env.CLIENT_URL;
+  const isPlaceholderClientUrl = (url) =>
+    !url || url.includes('your-render-service') || url.includes('localhost');
 
   app.use(
     cors({
-      origin: allowedOrigin,
+      origin: (origin, callback) => {
+        if (!origin) {
+          return callback(null, true);
+        }
+
+        if (clientUrl && origin === clientUrl) {
+          return callback(null, true);
+        }
+
+        if (!clientUrl || isPlaceholderClientUrl(clientUrl)) {
+          console.warn(
+            `CLIENT_URL is unset or placeholder (${clientUrl}). Allowing request origin for same-origin deployments.`
+          );
+          return callback(null, true);
+        }
+
+        return callback(new Error(`CORS policy: origin ${origin} not allowed`));
+      },
       credentials: true
     })
   );

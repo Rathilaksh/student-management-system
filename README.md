@@ -139,7 +139,7 @@ Use the included `railway.toml` for a one-service deployment.
    - `MONGO_URI=<mongodb-atlas-connection-string>` — required
    - `NODE_ENV=production` — required
    - `PORT=5000` — optional, Railway will provide a port if not set
-   - `CLIENT_URL=https://your-app-domain.com` — optional, set when the frontend is hosted separately or to configure CORS
+   - `CLIENT_URL=https://your-app-domain.com` — required in production when the frontend and API are served from a hosted URL; this must match your Railway app URL exactly
    - `JWT_EXPIRES_IN=7d` — optional
    - `COOKIE_NAME=sms_token` — optional
 3. Railway will use `npm start` for the server and the root `build` script to build the client.

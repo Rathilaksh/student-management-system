@@ -22,7 +22,7 @@ This document explains how to deploy the app to Railway using MongoDB Atlas as t
   - `MONGO_URI` (secret) — the MongoDB Atlas connection string from step 1
   - `NODE_ENV` — set to `production`
   - `PORT` — optional (default 5000). Railway provides a port automatically if not set.
-  - `CLIENT_URL` — the public URL Railways provides for the service (set after first deploy) or your custom domain
+  - `CLIENT_URL` — the public URL Railway provides for the service; this should match the deployed app URL exactly to avoid CORS issues
   - `JWT_EXPIRES_IN` — optional (default `7d`)
   - `COOKIE_NAME` — optional (default `sms_token`)
 
