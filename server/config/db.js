@@ -5,6 +5,7 @@ let memoryServer;
 
 const getMongoUri = async () => {
   if (process.env.MONGO_URI) {
+    console.log('MONGO_URI detected in environment');
     return process.env.MONGO_URI;
   }
 
@@ -12,6 +13,7 @@ const getMongoUri = async () => {
     throw new Error('MONGO_URI is not set');
   }
 
+  console.log('No MONGO_URI provided; starting in-memory MongoDB for development/test');
   memoryServer = await MongoMemoryServer.create();
   return memoryServer.getUri();
 };
@@ -30,10 +32,12 @@ const connectDB = async () => {
     console.error(`Mongoose event: error - ${error.message}`);
   });
 
+  // Attempt to connect using sane production-friendly timeouts
   await mongoose.connect(mongoUri, {
     maxPoolSize: 10,
     serverSelectionTimeoutMS: 10000,
-    socketTimeoutMS: 45000
+    socketTimeoutMS: 45000,
+    // keepAlive defaults are fine
   });
 
   console.log('MongoDB connected');

@@ -56,20 +56,35 @@ console.log(`  JWT_SECRET=${jwtConfigured ? 'configured' : 'not configured'}`);
 console.log(`  MONGO_URI=${mongoConfigured ? 'configured' : 'not configured'}`);
 console.log(`  CLIENT_URL=${CLIENT_URL}`);
 
+const delay = (ms) => new Promise((res) => setTimeout(res, ms));
+
 const startServer = async () => {
   let mongoConnected = false;
+  const maxAttempts = Number(process.env.DB_CONNECT_RETRIES || 5);
+  const baseDelay = Number(process.env.DB_CONNECT_BASE_DELAY_MS || 2000);
 
-  try {
-    await connectDB();
-    await seedDefaultAdmin();
-    mongoConnected = true;
-    console.log('MongoDB connected: true');
-  } catch (error) {
-    console.error('MongoDB connected: false');
-    console.error(`Startup error: ${error.message}`);
-    if (NODE_ENV === 'production') {
-      console.error('Production startup aborted due to MongoDB connection failure.');
-      process.exit(1);
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      console.log(`Attempt ${attempt} to connect to MongoDB...`);
+      await connectDB();
+      await seedDefaultAdmin();
+      mongoConnected = true;
+      console.log('MongoDB connected: true');
+      break;
+    } catch (error) {
+      console.error(`MongoDB connect attempt ${attempt} failed: ${error.message}`);
+      if (attempt === maxAttempts) {
+        console.error('All MongoDB connection attempts failed.');
+        if (NODE_ENV === 'production') {
+          console.error('Production startup aborted due to MongoDB connection failure.');
+          process.exit(1);
+        }
+      } else {
+        const wait = baseDelay * attempt;
+        console.log(`Waiting ${wait}ms before next attempt...`);
+        // eslint-disable-next-line no-await-in-loop
+        await delay(wait);
+      }
     }
   }
 
