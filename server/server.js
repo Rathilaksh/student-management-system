@@ -57,21 +57,27 @@ console.log(`  MONGO_URI=${mongoConfigured ? 'configured' : 'not configured'}`);
 console.log(`  CLIENT_URL=${CLIENT_URL}`);
 
 const startServer = async () => {
-  app.listen(PORT, () => {
-    console.log(`Server listening on port ${PORT}`);
-  });
-
   let mongoConnected = false;
+
   try {
     await connectDB();
     await seedDefaultAdmin();
     mongoConnected = true;
+    console.log('MongoDB connected: true');
   } catch (error) {
     console.error('MongoDB connected: false');
     console.error(`Startup error: ${error.message}`);
-  } finally {
-    console.log(`MongoDB connected: ${mongoConnected}`);
+    if (NODE_ENV === 'production') {
+      console.error('Production startup aborted due to MongoDB connection failure.');
+      process.exit(1);
+    }
   }
+
+  console.log(`MongoDB connected: ${mongoConnected}`);
+
+  app.listen(PORT, () => {
+    console.log(`Server listening on port ${PORT}`);
+  });
 };
 
 startServer().catch((error) => {

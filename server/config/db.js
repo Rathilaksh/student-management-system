@@ -16,9 +16,26 @@ const getMongoUri = async () => {
   return memoryServer.getUri();
 };
 
+mongoose.set('strictQuery', true);
+mongoose.set('bufferCommands', false);
+
 const connectDB = async () => {
   const mongoUri = await getMongoUri();
-  await mongoose.connect(mongoUri);
+
+  mongoose.connection.on('connected', () => {
+    console.log('Mongoose event: connected');
+  });
+
+  mongoose.connection.on('error', (error) => {
+    console.error(`Mongoose event: error - ${error.message}`);
+  });
+
+  await mongoose.connect(mongoUri, {
+    maxPoolSize: 10,
+    serverSelectionTimeoutMS: 10000,
+    socketTimeoutMS: 45000
+  });
+
   console.log('MongoDB connected');
 };
 
